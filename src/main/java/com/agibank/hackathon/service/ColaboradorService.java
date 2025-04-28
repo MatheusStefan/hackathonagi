@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ColaboradorService {
@@ -14,21 +15,38 @@ public class ColaboradorService {
     private MongoTemplate mongoTemplate;
 
     public List<Colaborador> getAllColaboradores() {
-        return mongoTemplate.findAll(Colaborador.class);
+        return mongoTemplate.findAll();
     }
 
     public Colaborador getColaboradorById(String id) {
-        return mongoTemplate.findById(id, Colaborador.class);
+        Optional<Colaborador> colaborador = mongoTemplate.findById(id);
+        return colaborador.orElseThrow(() -> new RuntimeException("Colaborador não encontrado com o ID: " + id));
     }
 
-    public void createColaborador(Colaborador colaborador) {
-        mongoTemplate.save(colaborador);
+    public Colaborador createColaborador(Colaborador colaborador) {
+        return mongoTemplate.save(colaborador);
+    }
+
+    public Colaborador atualizar(String id, Colaborador colaboradorAtualizado) {
+        Optional<Colaborador> colaboradorExistente = mongoTemplate.findById(id);
+
+        if (colaboradorExistente.isPresent()) {
+            Colaborador colaborador = colaboradorExistente.get();
+            colaborador.setNome (colaboradorAtualizado.getNome());
+            colaborador.setEquipamentos(colaboradorAtualizado.getEquipamentos());
+            colaborador.setStatus(colaboradorAtualizado.getStatus());
+
+            return mongoTemplate.save(colaborador);
+        } else {
+            throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
+        }
     }
 
     public void deleteColaborador(String id) {
-        Colaborador colaborador = mongoTemplate.findById(id, Colaborador.class);
-        if (colaborador != null) {
-            mongoTemplate.remove(colaborador);
+        if (mongoTemplate.findById(id)) {
+            mongoTemplate.remove(id);
+        } else {
+            throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
         }
     }
 }

@@ -16,3 +16,4 @@ public class Colaborador {
     private List<Equipamento> equipamentos;
     private statusColaborador status;
 }
+
