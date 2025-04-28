@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/teste")
-public class TesteController {
+@RequestMapping("/api/equipamentos")
+public class EquipamentoController {
 
     @Autowired
     private EquipamentoService equipamentoService;
@@ -22,6 +22,11 @@ public class TesteController {
     @GetMapping
     public List<Equipamento> listarEquipamentos(){
         return equipamentoService.listarTodosEquipamentos();
+    }
+
+    @GetMapping("/{id}")
+    public Equipamento listarEquipamentoById(@PathVariable String id){
+        return equipamentoService.listarEquipamentoById(id);
     }
 
 }
