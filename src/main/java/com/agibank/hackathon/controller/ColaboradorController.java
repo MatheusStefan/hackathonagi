@@ -32,7 +32,7 @@ public class ColaboradorController {
     }
 
     @PutMapping("/{id}")
-    public void atualizarColaborador(@PathVariable String id, @RequestBody Colaborador colaboradorAtualizado) {
+    public void atualizarColaborador(@PathVariable String id, @RequestBody ColaboradorStatusResponse colaboradorAtualizado) {
         colaboradorService.atualizar(id, colaboradorAtualizado);
     }
 
