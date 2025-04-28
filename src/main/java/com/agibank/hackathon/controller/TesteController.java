@@ -1,15 +1,19 @@
 package com.agibank.hackathon.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.agibank.hackathon.entities.Equipamento;
+import com.agibank.hackathon.service.EquipamentoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/equipamentos")
 public class TesteController {
 
-    @GetMapping("/teste")
-    public String teste() {
-        return "Teste";
+    @Autowired
+    private EquipamentoService equipamentoService;
+
+    @PostMapping
+    public void Cadastrar(@RequestBody Equipamento equipamento){
+        equipamentoService.cadastrarEquipamento(equipamento);
     }
 }
