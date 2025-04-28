@@ -16,4 +16,19 @@ public class ColaboradorService {
     public List<Colaborador> getAllColaboradores() {
         return mongoTemplate.findAll(Colaborador.class);
     }
+
+    public Colaborador getColaboradorById(String id) {
+        return mongoTemplate.findById(id, Colaborador.class);
+    }
+
+    public void createColaborador(Colaborador colaborador) {
+        mongoTemplate.save(colaborador);
+    }
+
+    public void deleteColaborador(String id) {
+        Colaborador colaborador = mongoTemplate.findById(id, Colaborador.class);
+        if (colaborador != null) {
+            mongoTemplate.remove(colaborador);
+        }
+    }
 }
