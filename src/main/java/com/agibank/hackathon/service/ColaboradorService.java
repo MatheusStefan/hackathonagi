@@ -46,11 +46,14 @@ public class ColaboradorService {
     public Colaborador atualizar(String id, Colaborador colaboradorAtualizado) {
         Colaborador colaboradorExistente = mongoTemplate.findById(id, Colaborador.class);
 
+        System.out.println("Passou aqui");
         if (colaboradorExistente == null) {
             throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
         }
+        System.out.println("Passou aqui");
         colaboradorExistente.setNome(colaboradorAtualizado.getNome());
         colaboradorExistente.setEquipamentos(colaboradorAtualizado.getEquipamentos());
+        colaboradorExistente.setStatus(colaboradorAtualizado.getStatus());
         return mongoTemplate.save(colaboradorExistente);
     }
 

@@ -49,8 +49,25 @@ public class ColaboradorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Colaborador> atualizarColaborador(@PathVariable String id, @RequestBody ColaboradorResponse colaboradorAtualizado) {
-        colaboradorService.atualizar(id, colaboradorAtualizado);
+    public ResponseEntity<ColaboradorResponse> atualizarColaborador(@PathVariable String id, @RequestBody ColaboradorResponse colaboradorRequest) {
+        try {
+            Colaborador colaborador = Colaborador.builder()
+                    .nome(colaboradorRequest.getNome())
+                    .equipamentos(colaboradorRequest.getEquipamentos())
+                    .status(colaboradorRequest.getStatus())
+                    .build();
+            Colaborador colaboradorSalvo = colaboradorService.atualizar(id, colaborador);
+
+            ColaboradorResponse colaboradorResponse = ColaboradorResponse.builder()
+                    .id(colaboradorSalvo.getId())
+                    .nome(colaboradorSalvo.getNome())
+                    .status(colaboradorSalvo.getStatus())
+                    .build();
+
+            return new ResponseEntity<>(colaboradorResponse, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PatchMapping("/{id}")
