@@ -1,10 +1,14 @@
 package com.agibank.hackathon.controller;
 
+import com.agibank.hackathon.controller.request.ColaboradorRequest;
 import com.agibank.hackathon.controller.request.ColaboradorStatusRequest;
+import com.agibank.hackathon.controller.response.ColaboradorResponse;
 import com.agibank.hackathon.controller.response.ColaboradorStatusResponse;
 import com.agibank.hackathon.entities.Colaborador;
 import com.agibank.hackathon.service.ColaboradorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,18 +31,31 @@ public class ColaboradorController {
     }
 
     @PostMapping
-    public void cadastrarColaborador(@RequestBody Colaborador colaborador) {
-        colaboradorService.cadastrarColaborador(colaborador);
+    public ResponseEntity<ColaboradorResponse> cadastrarColaborador(@RequestBody ColaboradorRequest colaboradorRequest) {
+        Colaborador colaborador = Colaborador.builder()
+                .nome(colaboradorRequest.getNome())
+                .equipamentos(colaboradorRequest.getEquipamentos())
+                .status(colaboradorRequest.getStatus())
+                .build();
+        Colaborador colaboradorSalvo = colaboradorService.cadastrarColaborador(colaborador);
+
+        ColaboradorResponse colaboradorResponse = ColaboradorResponse.builder()
+                .id(colaboradorSalvo.getId())
+                .nome(colaboradorSalvo.getNome())
+                .status(colaboradorSalvo.getStatus())
+                .build();
+
+        return new ResponseEntity<>(colaboradorResponse, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public void atualizarColaborador(@PathVariable String id, @RequestBody ColaboradorStatusResponse colaboradorAtualizado) {
+    public ResponseEntity<Colaborador> atualizarColaborador(@PathVariable String id, @RequestBody ColaboradorResponse colaboradorAtualizado) {
         colaboradorService.atualizar(id, colaboradorAtualizado);
     }
 
     @PatchMapping("/{id}")
     public void atualizarColaboradorStatus(@PathVariable String id, @RequestBody ColaboradorStatusResponse colaboradorAtualizado) {
-        colaboradorService.atualizar(id, colaboradorAtualizado);
+        colaboradorService.atualizarStatus(id, colaboradorAtualizado);
     }
 
     @DeleteMapping("/{id}")

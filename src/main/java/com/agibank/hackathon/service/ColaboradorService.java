@@ -1,9 +1,11 @@
 package com.agibank.hackathon.service;
 
+import com.agibank.hackathon.controller.response.ColaboradorResponse;
 import com.agibank.hackathon.controller.response.ColaboradorStatusResponse;
 import com.agibank.hackathon.entities.Colaborador;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,7 +33,7 @@ public class ColaboradorService {
         return mongoTemplate.save(colaborador);
     }
 
-    public Colaborador atualizar(String id, ColaboradorStatusResponse colaboradorAtualizado) {
+    public Colaborador atualizarStatus(String id, ColaboradorStatusResponse colaboradorAtualizado) {
         Colaborador colaboradorExistente = mongoTemplate.findById(id, Colaborador.class);
 
         if (colaboradorExistente == null) {
@@ -39,6 +41,17 @@ public class ColaboradorService {
         }
         colaboradorExistente.setStatus(colaboradorAtualizado.getStatus());
             return mongoTemplate.save(colaboradorExistente);
+    }
+
+    public Colaborador atualizar(String id, Colaborador colaboradorAtualizado) {
+        Colaborador colaboradorExistente = mongoTemplate.findById(id, Colaborador.class);
+
+        if (colaboradorExistente == null) {
+            throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
+        }
+        colaboradorExistente.setNome(colaboradorAtualizado.getNome());
+        colaboradorExistente.setEquipamentos(colaboradorAtualizado.getEquipamentos());
+        return mongoTemplate.save(colaboradorExistente);
     }
 
     public void deleteColaborador(String id) {
