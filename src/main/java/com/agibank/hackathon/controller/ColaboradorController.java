@@ -15,18 +15,28 @@ public class ColaboradorController {
     public ColaboradorService colaboradorService;
 
     @GetMapping
-    public List<Colaborador> getColaboradores() {
-        return colaboradorService.getAllColaboradores();
+    public List<Colaborador> listarColaboradores() {
+        return colaboradorService.listarTodosColaboradores();
     }
 
     @GetMapping("/{id}")
-    public Colaborador getColaboradorById(@PathVariable String id) {
-        return colaboradorService.getColaboradorById(id);
+    public Colaborador listarColaboradorById(@PathVariable String id) {
+        return colaboradorService.listarColaboradorById(id);
     }
 
     @PostMapping
-    public void createColaborador(@RequestBody Colaborador colaborador) {
-        colaboradorService.createColaborador(colaborador);
+    public void cadastrarColaborador(@RequestBody Colaborador colaborador) {
+        colaboradorService.cadastrarColaborador(colaborador);
+    }
+
+    @PutMapping("/{id}")
+    public void atualizarColaborador(@PathVariable String id, @RequestBody Colaborador colaboradorAtualizado) {
+        colaboradorService.atualizar(id, colaboradorAtualizado);
+    }
+
+    @PatchMapping("/{id}")
+    public void atualizarColaboradorStatus(@PathVariable String id, @RequestBody Colaborador colaboradorAtualizado) {
+        colaboradorService.atualizar(id, colaboradorAtualizado);
     }
 
     @DeleteMapping("/{id}")

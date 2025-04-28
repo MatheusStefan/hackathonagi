@@ -14,37 +14,40 @@ public class ColaboradorService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public List<Colaborador> getAllColaboradores() {
-        return mongoTemplate.findAll();
+    public List<Colaborador> listarTodosColaboradores() {
+        return mongoTemplate.findAll(Colaborador.class);
     }
 
-    public Colaborador getColaboradorById(String id) {
-        Optional<Colaborador> colaborador = mongoTemplate.findById(id);
-        return colaborador.orElseThrow(() -> new RuntimeException("Colaborador não encontrado com o ID: " + id));
+    public Colaborador listarColaboradorById(String id) {
+     Colaborador colaborador = mongoTemplate.findById(id, Colaborador.class);
+     if (colaborador == null) {
+            throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
+     }
+        return colaborador;
     }
 
-    public Colaborador createColaborador(Colaborador colaborador) {
+    public Colaborador cadastrarColaborador(Colaborador colaborador) {
         return mongoTemplate.save(colaborador);
     }
 
     public Colaborador atualizar(String id, Colaborador colaboradorAtualizado) {
-        Optional<Colaborador> colaboradorExistente = mongoTemplate.findById(id);
+        Colaborador colaboradorExistente = mongoTemplate.findById(id, Colaborador.class);
 
-        if (colaboradorExistente.isPresent()) {
-            Colaborador colaborador = colaboradorExistente.get();
-            colaborador.setNome (colaboradorAtualizado.getNome());
-            colaborador.setEquipamentos(colaboradorAtualizado.getEquipamentos());
-            colaborador.setStatus(colaboradorAtualizado.getStatus());
+        if (colaboradorExistente != null) {
+            colaboradorExistente.setNome (colaboradorAtualizado.getNome());
+            colaboradorExistente.setEquipamentos(colaboradorAtualizado.getEquipamentos());
+            colaboradorExistente.setStatus(colaboradorAtualizado.getStatus());
 
-            return mongoTemplate.save(colaborador);
+            return mongoTemplate.save(colaboradorExistente);
         } else {
             throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
         }
     }
 
     public void deleteColaborador(String id) {
-        if (mongoTemplate.findById(id)) {
-            mongoTemplate.remove(id);
+        Colaborador colaboradorExistente = mongoTemplate.findById(id, Colaborador.class);
+        if (colaboradorExistente != null) {
+            mongoTemplate.remove(colaboradorExistente);
         } else {
             throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
         }
