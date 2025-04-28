@@ -13,7 +13,6 @@ import java.util.List;
 public class Colaborador {
     private String id;
     private String nome;
-    private List<Equipamento> equipamentos;
     private statusColaborador status;
 }
 
