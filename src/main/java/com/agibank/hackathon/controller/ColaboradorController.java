@@ -1,5 +1,7 @@
 package com.agibank.hackathon.controller;
 
+import com.agibank.hackathon.controller.request.ColaboradorStatusRequest;
+import com.agibank.hackathon.controller.response.ColaboradorStatusResponse;
 import com.agibank.hackathon.entities.Colaborador;
 import com.agibank.hackathon.service.ColaboradorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,7 @@ public class ColaboradorController {
     }
 
     @PatchMapping("/{id}")
-    public void atualizarColaboradorStatus(@PathVariable String id, @RequestBody Colaborador colaboradorAtualizado) {
+    public void atualizarColaboradorStatus(@PathVariable String id, @RequestBody ColaboradorStatusResponse colaboradorAtualizado) {
         colaboradorService.atualizar(id, colaboradorAtualizado);
     }
 
