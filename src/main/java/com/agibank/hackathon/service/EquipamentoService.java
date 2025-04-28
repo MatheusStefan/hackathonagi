@@ -1,18 +1,17 @@
-package com.agibank.hackathon.repository;
+package com.agibank.hackathon.service;
 
 import com.agibank.hackathon.entities.Equipamento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-@Repository
-public class EquipamentosRepositoryCustomImpl implements EquipamentosRepositoryCustom{
+@Service
+public class EquipamentoService {
 
     @Autowired
-    private MongoTemplate mongoTemplate;
+    public MongoTemplate mongoTemplate;
 
     public void cadastrarEquipamento(Equipamento equipamento){
-        Equipamento.setId(null);
         mongoTemplate.save(equipamento);
     }
 }
