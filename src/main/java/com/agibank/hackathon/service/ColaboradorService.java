@@ -1,15 +1,21 @@
 package com.agibank.hackathon.service;
 
+import com.agibank.hackathon.controller.request.ColaboradorStatusRequest;
 import com.agibank.hackathon.controller.response.ColaboradorResponse;
 import com.agibank.hackathon.controller.response.ColaboradorStatusResponse;
 import com.agibank.hackathon.entities.Colaborador;
+import com.agibank.hackathon.entities.Equipamento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service
 public class ColaboradorService {
@@ -33,7 +39,28 @@ public class ColaboradorService {
         return mongoTemplate.save(colaborador);
     }
 
-    public Colaborador atualizarStatus(String id, ColaboradorStatusResponse colaboradorAtualizado) {
+    public List<Equipamento> adicionarEquipamento(String id, List<Equipamento> equipamentos) {
+        Colaborador colaborador = listarColaboradorById(id);
+
+        if (colaborador == null) {
+            throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
+        }
+
+        if (colaborador.getEquipamentos() == null) {
+            colaborador.setEquipamentos(new ArrayList<>());
+        }
+
+        for (Equipamento equipamento : equipamentos) {
+            equipamento.setColaborador(colaborador);
+            var equipamentoSalvo = mongoTemplate.save(equipamento);
+            colaborador.getEquipamentos().add(equipamentoSalvo);
+        }
+        mongoTemplate.save(colaborador);
+
+        return colaborador.getEquipamentos();
+    }
+
+    public Colaborador atualizarStatus(String id, ColaboradorStatusRequest colaboradorAtualizado) {
         Colaborador colaboradorExistente = mongoTemplate.findById(id, Colaborador.class);
 
         if (colaboradorExistente == null) {

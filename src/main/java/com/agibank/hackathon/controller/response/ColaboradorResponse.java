@@ -4,6 +4,7 @@ import com.agibank.hackathon.entities.Equipamento;
 import com.agibank.hackathon.entities.enums.statusColaborador;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.List;
 
@@ -12,6 +13,8 @@ import java.util.List;
 public class ColaboradorResponse {
     private String id;
     private String nome;
+
+    @DBRef
     private List<Equipamento> equipamentos;
     private statusColaborador status;
 }
