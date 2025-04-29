@@ -19,8 +19,8 @@ public class EquipamentoService {
     @Autowired
     public MongoTemplate mongoTemplate;
 
-    public void cadastrarEquipamento(Equipamento equipamento){
-        mongoTemplate.save(equipamento);
+    public Equipamento cadastrarEquipamento(Equipamento equipamento) {
+        return mongoTemplate.save(equipamento);
     }
 
     public List<Equipamento> listarTodosEquipamentos() {

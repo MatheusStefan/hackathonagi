@@ -4,12 +4,14 @@ import com.agibank.hackathon.controller.request.EmprestimosEquipamentosRequest;
 import com.agibank.hackathon.entities.Colaborador;
 import com.agibank.hackathon.entities.EmprestimosEquipamentos;
 import com.agibank.hackathon.entities.Equipamento;
+import com.agibank.hackathon.entities.enums.StatusEmprestimoEquipamento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -156,6 +158,20 @@ public class EmprestimosEquipamentosService {
         }
 
         return emprestimos;
+    }
+
+    public void realizarEmprestimo(Equipamento equipamento, Colaborador colaborador) {
+        EmprestimosEquipamentos emprestimo = EmprestimosEquipamentos.builder()
+                .equipamento(equipamento)
+                .colaborador(colaborador)
+                .data_entrega(LocalDate.now())
+                .status(StatusEmprestimoEquipamento.ATIVO)
+                .build();
+        mongoTemplate.save(emprestimo);
+
+        // Update the equipment's collaboratorId
+        equipamento.setColaboradorId(colaborador.getId());
+        mongoTemplate.save(equipamento);
     }
 
 }
