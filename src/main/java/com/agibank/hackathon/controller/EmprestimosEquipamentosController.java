@@ -144,4 +144,40 @@ public class EmprestimosEquipamentosController {
     public void deleteColaborador(@PathVariable String id) {
         emprestimosEquipamentosService.deleteEmprestimosEquipamentos(id);
     }
+    @GetMapping("/historico")
+    public ResponseEntity<List<EmprestimosEquipamentosResponse>> listarHistorico(
+            @RequestParam(required = false) String colaboradorId,
+            @RequestParam(required = false) String equipamentoId) {
+        try {
+            List<EmprestimosEquipamentos> emprestimos;
+
+            if (colaboradorId != null && equipamentoId != null) {
+                emprestimos = emprestimosEquipamentosService.listarEmprestimosPorColaboradorEEquipamento(colaboradorId, equipamentoId);
+            } else if (colaboradorId != null) {
+                emprestimos = emprestimosEquipamentosService.listarEmprestimosPorColaborador(colaboradorId);
+            } else if (equipamentoId != null) {
+                emprestimos = emprestimosEquipamentosService.listarEmprestimosPorEquipamento(equipamentoId);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            List<EmprestimosEquipamentosResponse> emprestimosResponse = emprestimos.stream()
+                    .map(emprestimo -> EmprestimosEquipamentosResponse.builder()
+                            .id(emprestimo.getId())
+                            .equipamento(emprestimo.getEquipamento())
+                            .colaborador(emprestimo.getColaborador())
+                            .data_entrega(emprestimo.getData_entrega())
+                            .data_devolucao(emprestimo.getData_devolucao())
+                            .status(emprestimo.getStatus())
+                            .devolucao(emprestimo.getDevolucao())
+                            .build())
+                    .collect(Collectors.toList());
+
+            return new ResponseEntity<>(emprestimosResponse, HttpStatus.OK);
+
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

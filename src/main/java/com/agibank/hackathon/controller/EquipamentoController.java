@@ -1,10 +1,7 @@
 package com.agibank.hackathon.controller;
 
-import com.agibank.hackathon.controller.request.ColaboradorRequest;
 import com.agibank.hackathon.controller.request.EquipamentoRequest;
-import com.agibank.hackathon.controller.response.ColaboradorResponse;
 import com.agibank.hackathon.controller.response.EquipamentoResponse;
-import com.agibank.hackathon.entities.Colaborador;
 import com.agibank.hackathon.entities.Equipamento;
 import com.agibank.hackathon.service.EquipamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,25 +19,44 @@ public class EquipamentoController {
     private EquipamentoService equipamentoService;
 
     @PostMapping
-    public void Cadastrar(@RequestBody Equipamento equipamento){
+    public ResponseEntity<EquipamentoResponse> cadastrar(@RequestBody EquipamentoRequest equipamentoRequest) {
+        Equipamento equipamento = Equipamento.builder()
+                .tipo(equipamentoRequest.getTipo())
+                .modelo(equipamentoRequest.getModelo())
+                .status(equipamentoRequest.getStatus())
+                .colaboradorId(equipamentoRequest.getColaboradorId())
+                .build();
+
         equipamentoService.cadastrarEquipamento(equipamento);
+
+        EquipamentoResponse response = EquipamentoResponse.builder()
+                .tipo(equipamento.getTipo())
+                .modelo(equipamento.getModelo())
+                .status(equipamento.getStatus())
+                .colaboradorId(equipamento.getColaboradorId())
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<Equipamento> listarEquipamentos(){
-        return equipamentoService.listarTodosEquipamentos();
+    public ResponseEntity<List<Equipamento>> listarEquipamentos() {
+        return ResponseEntity.ok(equipamentoService.listarTodosEquipamentos());
     }
-
     @GetMapping("/{id}")
-    public Equipamento listarEquipamentoById(@PathVariable String id){
-        return equipamentoService.listarEquipamentoById(id);
+    public ResponseEntity<Equipamento> listarEquipamentoById(@PathVariable String id){
+        try {
+            Equipamento equipamento = equipamentoService.listarEquipamentoById(id);
+            return ResponseEntity.ok(equipamento);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
-
     @GetMapping("/colaborador/{colaboradorId}")
-    public List<Equipamento> listarEquipamentosPorColaborador(@PathVariable String colaboradorId) {
-        return equipamentoService.listarEquipamentosPorColaborador(colaboradorId);
+    public ResponseEntity<List<Equipamento>> listarEquipamentosPorColaborador(@PathVariable String colaboradorId) {
+        List<Equipamento> equipamentos = equipamentoService.listarEquipamentosPorColaborador(colaboradorId);
+        return ResponseEntity.ok(equipamentos);
     }
-
     @PutMapping("/{id}")
     public ResponseEntity<EquipamentoResponse> atualizarEquipamento(@PathVariable String id, @RequestBody EquipamentoRequest equipamentoRequest) {
         try {
@@ -50,6 +66,7 @@ public class EquipamentoController {
                     .status(equipamentoRequest.getStatus())
                     .colaboradorId(equipamentoRequest.getColaboradorId())
                     .build();
+
             Equipamento equipamentoSalvo = equipamentoService.atualizar(id, equipamento, equipamentoRequest.getColaboradorId());
 
             EquipamentoResponse equipamentoResponse = EquipamentoResponse.builder()
@@ -61,8 +78,7 @@ public class EquipamentoController {
 
             return new ResponseEntity<>(equipamentoResponse, HttpStatus.OK);
         } catch (RuntimeException e) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            throw e;
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

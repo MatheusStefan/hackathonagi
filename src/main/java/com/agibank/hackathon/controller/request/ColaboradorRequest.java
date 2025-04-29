@@ -13,7 +13,7 @@ import java.util.List;
 public class ColaboradorRequest {
     private String nome;
 
-    @DBRef
-    private List<Equipamento> equipamentos;
+
+   // private List<Equipamento> equipamentos;
     private StatusColaborador status;
 }

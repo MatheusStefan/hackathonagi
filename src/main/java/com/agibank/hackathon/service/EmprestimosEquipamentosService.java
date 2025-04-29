@@ -60,6 +60,10 @@ public class EmprestimosEquipamentosService {
 
     public EmprestimosEquipamentos cadastrarEmprestimosEquipamentos(EmprestimosEquipamentos emprestimosEquipamentos) {
 
+        if (emprestimosEquipamentos.getData_entrega() != null && emprestimosEquipamentos.getDevolucao() == null) {
+            throw new RuntimeException("Devolução obrigatória quando há data de entrega.");
+        }
+
         String equipamentoId = emprestimosEquipamentos.getEquipamento().getId();
         Equipamento equipamento = mongoTemplate.findById(equipamentoId, Equipamento.class);
         if (equipamento == null) {
@@ -81,6 +85,11 @@ public class EmprestimosEquipamentosService {
 
         if (emprestimosEquipamentosExistente == null) {
             throw new RuntimeException("EmprestimosEquipamentos não encontrado com o ID: " + id);
+        }
+
+        // Nova regra
+        if (emprestimosEquipamentosAtualizado.getData_entrega() != null && emprestimosEquipamentosAtualizado.getDevolucao() == null) {
+            throw new RuntimeException("Devolução obrigatória quando há data de entrega.");
         }
 
         if (emprestimosEquipamentosAtualizado.getEquipamento() != null &&
@@ -114,6 +123,7 @@ public class EmprestimosEquipamentosService {
         return mongoTemplate.save(emprestimosEquipamentosExistente);
     }
 
+
     public EmprestimosEquipamentos atualizarStatus(String id, EmprestimosEquipamentosRequest emprestimosEquipamentosAtualizado) {
         EmprestimosEquipamentos emprestimosEquipamentosExistente = mongoTemplate.findById(id, EmprestimosEquipamentos.class);
 
@@ -132,4 +142,20 @@ public class EmprestimosEquipamentosService {
             throw new RuntimeException("EmprestimosEquipamentos não encontrado com o ID: " + id);
         }
     }
+
+    public List<EmprestimosEquipamentos> listarEmprestimosPorColaboradorEEquipamento(String colaboradorId, String equipamentoId) {
+        Query query = new Query(new Criteria().andOperator(
+                Criteria.where("colaborador.id").is(colaboradorId),
+                Criteria.where("equipamento.id").is(equipamentoId)
+        ));
+
+        List<EmprestimosEquipamentos> emprestimos = mongoTemplate.find(query, EmprestimosEquipamentos.class);
+
+        if (emprestimos.isEmpty()) {
+            throw new RuntimeException("Nenhum empréstimo encontrado para colaboradorId: " + colaboradorId + " e equipamentoId: " + equipamentoId);
+        }
+
+        return emprestimos;
+    }
+
 }
