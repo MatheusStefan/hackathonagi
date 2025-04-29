@@ -1,7 +1,7 @@
 package com.agibank.hackathon.entities;
 
-import com.agibank.hackathon.entities.enums.motivoDevolucao;
-import com.agibank.hackathon.entities.enums.statusEmprestimoEquipamento;
+import com.agibank.hackathon.entities.enums.MotivoDevolucao;
+import com.agibank.hackathon.entities.enums.StatusEmprestimoEquipamento;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -19,6 +19,6 @@ public class emprestimosEquipamentos {
     private Colaborador colaborador;
     private LocalDate data_entrega;
     private LocalDate data_devolucao;
-    private statusEmprestimoEquipamento status;
-    private motivoDevolucao devolucao;
+    private StatusEmprestimoEquipamento status;
+    private MotivoDevolucao devolucao;
 }
