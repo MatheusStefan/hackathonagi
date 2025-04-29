@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 @Data
 public class EquipamentoResponse {
+    private String id; // Added id field
     private String tipo;
     private String modelo;
     private StatusEquipamento status;

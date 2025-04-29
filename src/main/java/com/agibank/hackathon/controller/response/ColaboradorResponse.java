@@ -13,5 +13,7 @@ import java.util.List;
 public class ColaboradorResponse {
     private String id;
     private String nome;
+    @DBRef
+    private List<Equipamento> equipamentos; // Added to match the entity
     private StatusColaborador status;
 }

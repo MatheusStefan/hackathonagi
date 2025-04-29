@@ -1,21 +1,13 @@
 package com.agibank.hackathon.service;
 
 import com.agibank.hackathon.controller.request.ColaboradorStatusRequest;
-import com.agibank.hackathon.controller.response.ColaboradorResponse;
-import com.agibank.hackathon.controller.response.ColaboradorStatusResponse;
 import com.agibank.hackathon.entities.Colaborador;
 import com.agibank.hackathon.entities.Equipamento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service
 public class ColaboradorService {
@@ -27,11 +19,11 @@ public class ColaboradorService {
         return mongoTemplate.findAll(Colaborador.class);
     }
 
-    public Colaborador listarColaboradorById(String id) {
-     Colaborador colaborador = mongoTemplate.findById(id, Colaborador.class);
-     if (colaborador == null) {
+    public Colaborador buscarColaboradorPorId(String id) {
+        Colaborador colaborador = mongoTemplate.findById(id, Colaborador.class);
+        if (colaborador == null) {
             throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
-     }
+        }
         return colaborador;
     }
 
@@ -40,14 +32,18 @@ public class ColaboradorService {
     }
 
     public Equipamento adicionarEquipamento(String id, String equipamentoId) {
-        Colaborador colaborador = listarColaboradorById(id);
+        Colaborador colaborador = buscarColaboradorPorId(id);
         Equipamento equipamento = mongoTemplate.findById(equipamentoId, Equipamento.class);
 
         if (colaborador == null || equipamento == null) {
-            throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
+            throw new RuntimeException("Colaborador ou equipamento não encontrado.");
         }
 
         equipamento.setColaboradorId(id);
+        List<Equipamento> equipamentos = colaborador.getEquipamentos();
+        equipamentos.add(equipamento);
+        colaborador.setEquipamentos(equipamentos);
+        mongoTemplate.save(colaborador);
 
         return mongoTemplate.save(equipamento);
     }
@@ -59,17 +55,19 @@ public class ColaboradorService {
             throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
         }
         colaboradorExistente.setStatus(colaboradorAtualizado.getStatus());
-            return mongoTemplate.save(colaboradorExistente);
+        return mongoTemplate.save(colaboradorExistente);
     }
 
     public Colaborador atualizar(String id, Colaborador colaboradorAtualizado) {
         Colaborador colaboradorExistente = mongoTemplate.findById(id, Colaborador.class);
-
         if (colaboradorExistente == null) {
             throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
         }
+
         colaboradorExistente.setNome(colaboradorAtualizado.getNome());
+        colaboradorExistente.setEquipamentos(colaboradorAtualizado.getEquipamentos());
         colaboradorExistente.setStatus(colaboradorAtualizado.getStatus());
+
         return mongoTemplate.save(colaboradorExistente);
     }
 
