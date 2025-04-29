@@ -1,5 +1,6 @@
 package com.agibank.hackathon.service;
 
+import com.agibank.hackathon.controller.request.ColaboradorRequest;
 import com.agibank.hackathon.controller.request.ColaboradorStatusRequest;
 import com.agibank.hackathon.controller.response.ColaboradorResponse;
 import com.agibank.hackathon.controller.response.ColaboradorStatusResponse;
@@ -30,9 +31,9 @@ public class ColaboradorService {
         return mongoTemplate.findAll(Colaborador.class);
     }
 
-    public Colaborador listarColaboradorById(String id) {
-     Colaborador colaborador = mongoTemplate.findById(id, Colaborador.class);
-     if (colaborador == null) {
+    public Colaborador buscarColaboradorPorId(String id) {
+        Colaborador colaborador = mongoTemplate.findById(id, Colaborador.class);
+        if (colaborador == null) {
             throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
      }
         return colaborador;
@@ -43,7 +44,7 @@ public class ColaboradorService {
     }
 
     public Equipamento adicionarEquipamento(String id, String equipamentoId) {
-        Colaborador colaborador = listarColaboradorById(id);
+        Colaborador colaborador = buscarColaboradorPorId(id);
         Equipamento equipamento = mongoTemplate.findById(equipamentoId, Equipamento.class);
 
         if (colaborador == null || equipamento == null) {
@@ -108,5 +109,27 @@ public class ColaboradorService {
         return colaboradoresComPendencias;
     }
 
+    public List<Equipamento> deleteColaboradorComEquipamentos(String id) {
+        // Verifica se o colaborador existe
+        Colaborador colaboradorExistente = mongoTemplate.findById(id, Colaborador.class);
+        if (colaboradorExistente == null) {
+            throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
+        }
+
+        // Busca os equipamentos associados ao colaborador
+        List<Equipamento> equipamentosAssociados = mongoTemplate.find(
+                Query.query(Criteria.where("colaboradorId").is(id)),
+                Equipamento.class
+        );
+
+        // Se houver equipamentos associados, impede a exclusão e retorna a lista
+        if (!equipamentosAssociados.isEmpty()) {
+            return equipamentosAssociados;
+        }
+
+        // Remove o colaborador se não houver equipamentos associados
+        mongoTemplate.remove(colaboradorExistente);
+        return List.of(); // Retorna uma lista vazia indicando que a exclusão foi realizada
+    }
 
 }

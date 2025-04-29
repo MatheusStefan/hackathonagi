@@ -3,7 +3,6 @@ package com.agibank.hackathon.controller;
 import com.agibank.hackathon.controller.request.ColaboradorRequest;
 import com.agibank.hackathon.controller.request.ColaboradorStatusRequest;
 import com.agibank.hackathon.controller.response.ColaboradorResponse;
-import com.agibank.hackathon.controller.response.ColaboradorStatusResponse;
 import com.agibank.hackathon.controller.response.EquipamentoResponse;
 import com.agibank.hackathon.entities.Colaborador;
 import com.agibank.hackathon.entities.Equipamento;
@@ -33,7 +32,7 @@ public class ColaboradorController {
 
     @GetMapping("/{id}")
     public Colaborador listarColaboradorById(@PathVariable String id) {
-        return colaboradorService.listarColaboradorById(id);
+        return colaboradorService.buscarColaboradorPorId(id);
     }
 
     @PostMapping
@@ -90,6 +89,15 @@ public class ColaboradorController {
         }
     }
 
+    @DeleteMapping("/{id}/verificar-equipamentos")
+    public ResponseEntity<List<Equipamento>> verificarEquipamentosAntesDeletar(@PathVariable String id) {
+        List<Equipamento> equipamentos = colaboradorService.deleteColaboradorComEquipamentos(id);
+        if (!equipamentos.isEmpty()) {
+            return new ResponseEntity<>(equipamentos, HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @PatchMapping("/{id}")
     public void atualizarColaboradorStatus(@PathVariable String id, @RequestBody ColaboradorStatusRequest colaboradorAtualizado) {
         colaboradorService.atualizarStatus(id, colaboradorAtualizado);
@@ -99,6 +107,7 @@ public class ColaboradorController {
     public void deleteColaborador(@PathVariable String id) {
         colaboradorService.deleteColaborador(id);
     }
+
     @GetMapping("/pendencias/desligamento")
     public List<ColaboradorResponse> colaboradoresComPendenciasDeEquipamento() {
         List<Colaborador> colaboradores = colaboradorService.colaboradoresComPendenciaDeEquipamentoParaDesligamento();
@@ -111,7 +120,4 @@ public class ColaboradorController {
                         .build()
         ).toList();
     }
-
-
-
 }

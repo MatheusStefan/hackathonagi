@@ -3,7 +3,10 @@ package com.agibank.hackathon.controller;
 import com.agibank.hackathon.controller.request.EquipamentoRequest;
 import com.agibank.hackathon.controller.response.EquipamentoResponse;
 import com.agibank.hackathon.entities.Equipamento;
+import com.agibank.hackathon.service.ColaboradorService;
+import com.agibank.hackathon.service.EmprestimosEquipamentosService;
 import com.agibank.hackathon.service.EquipamentoService;
+import com.agibank.hackathon.service.SolicitacaoCompraService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,6 +80,28 @@ public class EquipamentoController {
                     .build();
 
             return new ResponseEntity<>(equipamentoResponse, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PatchMapping("/{id}/atualizar-status")
+    public ResponseEntity<EquipamentoResponse> atualizarStatusEquipamento(
+            @PathVariable String id,
+            @RequestBody EquipamentoRequest equipamentoRequest) {
+        try {
+            // Atualiza o status e desassocia o colaborador
+            Equipamento equipamentoAtualizado = equipamentoService.atualizarStatusEDesassociarColaborador(id, equipamentoRequest.getStatus());
+
+            // Cria a resposta
+            EquipamentoResponse response = EquipamentoResponse.builder()
+                    .tipo(equipamentoAtualizado.getTipo())
+                    .modelo(equipamentoAtualizado.getModelo())
+                    .status(equipamentoAtualizado.getStatus())
+                    .colaboradorId(equipamentoAtualizado.getColaboradorId())
+                    .build();
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

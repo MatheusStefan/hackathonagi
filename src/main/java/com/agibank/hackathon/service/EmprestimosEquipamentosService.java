@@ -171,8 +171,8 @@ public class EmprestimosEquipamentosService {
 
     public void realizarEmprestimo(Equipamento equipamento, Colaborador colaborador) {
         EmprestimosEquipamentos emprestimo = EmprestimosEquipamentos.builder()
-                .equipamento(equipamento)
-                .colaborador(colaborador)
+                .equipamentoId(equipamento.getId())
+                .colaboradorId(colaborador.getId())
                 .data_entrega(LocalDate.now())
                 .status(StatusEmprestimoEquipamento.ATIVO)
                 .build();

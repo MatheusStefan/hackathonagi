@@ -1,8 +1,12 @@
 package com.agibank.hackathon.controller;
 
 import com.agibank.hackathon.controller.request.EmprestimosEquipamentosRequest;
+import com.agibank.hackathon.controller.request.SolicitacaoEmprestimoRequest;
 import com.agibank.hackathon.controller.response.EmprestimosEquipamentosResponse;
+import com.agibank.hackathon.entities.Colaborador;
 import com.agibank.hackathon.entities.EmprestimosEquipamentos;
+import com.agibank.hackathon.entities.Equipamento;
+import com.agibank.hackathon.entities.SolicitacaoCompra;
 import com.agibank.hackathon.service.ColaboradorService;
 import com.agibank.hackathon.service.EmprestimosEquipamentosService;
 import com.agibank.hackathon.service.EquipamentoService;
@@ -46,7 +50,7 @@ public class EmprestimosEquipamentosController {
                     .map(emprestimo -> EmprestimosEquipamentosResponse.builder()
                             .id(emprestimo.getId())
                             .equipamento(equipamentoService.listarEquipamentoById(emprestimo.getEquipamentoId()))
-                            .colaborador(colaboradorService.listarColaboradorById(emprestimo.getColaboradorId()))
+                            .colaborador(colaboradorService.buscarColaboradorPorId(emprestimo.getColaboradorId()))
                             .data_entrega(emprestimo.getData_entrega())
                             .data_devolucao(emprestimo.getData_devolucao())
                             .status(emprestimo.getStatus())
@@ -69,7 +73,7 @@ public class EmprestimosEquipamentosController {
                     .map(emprestimo -> EmprestimosEquipamentosResponse.builder()
                             .id(emprestimo.getId())
                             .equipamento(equipamentoService.listarEquipamentoById(emprestimo.getEquipamentoId()))
-                            .colaborador(colaboradorService.listarColaboradorById(emprestimo.getColaboradorId()))
+                            .colaborador(colaboradorService.buscarColaboradorPorId(emprestimo.getColaboradorId()))
                             .data_entrega(emprestimo.getData_entrega())
                             .data_devolucao(emprestimo.getData_devolucao())
                             .status(emprestimo.getStatus())
@@ -90,7 +94,7 @@ public class EmprestimosEquipamentosController {
         EmprestimosEquipamentosResponse response = EmprestimosEquipamentosResponse.builder()
                 .id(salvo.getId())
                 .equipamento(equipamentoService.listarEquipamentoById(salvo.getEquipamentoId()))
-                .colaborador(colaboradorService.listarColaboradorById(salvo.getColaboradorId()))
+                .colaborador(colaboradorService.buscarColaboradorPorId(salvo.getColaboradorId()))
                 .data_entrega(salvo.getData_entrega())
                 .data_devolucao(salvo.getData_devolucao())
                 .status(salvo.getStatus())
@@ -109,7 +113,11 @@ public class EmprestimosEquipamentosController {
     public void deleteEmprestimo(@PathVariable String id) {
         emprestimosEquipamentosService.deleteEmprestimosEquipamentos(id);
     }
+
+
 }
+
+
 
 
 //    @PutMapping("/{id}")
