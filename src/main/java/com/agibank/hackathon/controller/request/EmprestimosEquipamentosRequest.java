@@ -13,8 +13,8 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class EmprestimosEquipamentosRequest {
-    private Equipamento equipamento;
-    private Colaborador colaborador;
+    private String equipamentoId;
+    private String colaboradorId;
     private LocalDate data_entrega;
     private LocalDate data_devolucao;
     private StatusEmprestimoEquipamento status;

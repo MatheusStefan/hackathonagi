@@ -15,8 +15,8 @@ import java.time.LocalDate;
 public class EmprestimosEquipamentos {
     @Id
     private String id;
-    private Equipamento equipamento;
-    private Colaborador colaborador;
+    private String equipamentoId;
+    private String colaboradorId;
     private LocalDate data_entrega;
     private LocalDate data_devolucao;
     private StatusEmprestimoEquipamento status;

@@ -6,7 +6,6 @@ import com.agibank.hackathon.entities.enums.MotivoDevolucao;
 import com.agibank.hackathon.entities.enums.StatusEmprestimoEquipamento;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
 
