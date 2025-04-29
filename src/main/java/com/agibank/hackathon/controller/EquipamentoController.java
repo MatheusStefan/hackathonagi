@@ -20,6 +20,7 @@ public class EquipamentoController {
 
     @PostMapping
     public ResponseEntity<EquipamentoResponse> cadastrar(@RequestBody EquipamentoRequest equipamentoRequest) {
+
         Equipamento equipamento = Equipamento.builder()
                 .tipo(equipamentoRequest.getTipo())
                 .modelo(equipamentoRequest.getModelo())
