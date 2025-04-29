@@ -99,6 +99,19 @@ public class ColaboradorController {
     public void deleteColaborador(@PathVariable String id) {
         colaboradorService.deleteColaborador(id);
     }
+    @GetMapping("/pendencias/desligamento")
+    public List<ColaboradorResponse> colaboradoresComPendenciasDeEquipamento() {
+        List<Colaborador> colaboradores = colaboradorService.colaboradoresComPendenciaDeEquipamentoParaDesligamento();
+
+        return colaboradores.stream().map(colaborador ->
+                ColaboradorResponse.builder()
+                        .id(colaborador.getId())
+                        .nome(colaborador.getNome())
+                        .status(colaborador.getStatus())
+                        .build()
+        ).toList();
+    }
+
 
 
 }

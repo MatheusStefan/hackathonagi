@@ -5,8 +5,11 @@ import com.agibank.hackathon.controller.response.ColaboradorResponse;
 import com.agibank.hackathon.controller.response.ColaboradorStatusResponse;
 import com.agibank.hackathon.entities.Colaborador;
 import com.agibank.hackathon.entities.Equipamento;
+import com.agibank.hackathon.entities.enums.StatusColaborador;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -81,4 +84,29 @@ public class ColaboradorService {
             throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
         }
     }
+    public List<Colaborador> colaboradoresComPendenciaDeEquipamentoParaDesligamento() {
+        // 1. Buscar todos os colaboradores com status de DESLIGADO
+        List<Colaborador> colaboradores = mongoTemplate.find(
+                Query.query(Criteria.where("status").is(StatusColaborador.DESLIGADO)),
+                Colaborador.class
+        );
+
+        List<Colaborador> colaboradoresComPendencias = new ArrayList<>();
+
+        for (Colaborador colaborador : colaboradores) {
+            List<Equipamento> equipamentosPendentes = mongoTemplate.find(
+                    Query.query(Criteria.where("colaboradorId").is(colaborador.getId())
+                            .and("status").ne("DEVOLVIDO")),
+                    Equipamento.class
+            );
+
+            if (!equipamentosPendentes.isEmpty()) {
+                colaboradoresComPendencias.add(colaborador);
+            }
+        }
+
+        return colaboradoresComPendencias;
+    }
+
+
 }
