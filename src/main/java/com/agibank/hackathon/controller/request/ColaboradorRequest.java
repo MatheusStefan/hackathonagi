@@ -12,8 +12,7 @@ import java.util.List;
 @Data
 public class ColaboradorRequest {
     private String nome;
-
-
-   // private List<Equipamento> equipamentos;
+    @DBRef
+    private List<Equipamento> equipamentos; // Uncommented and added DBRef
     private StatusColaborador status;
 }

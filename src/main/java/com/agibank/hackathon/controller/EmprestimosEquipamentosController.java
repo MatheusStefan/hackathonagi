@@ -1,11 +1,8 @@
 package com.agibank.hackathon.controller;
 
 import com.agibank.hackathon.controller.request.EmprestimosEquipamentosRequest;
-
 import com.agibank.hackathon.controller.response.EmprestimosEquipamentosResponse;
-
 import com.agibank.hackathon.entities.EmprestimosEquipamentos;
-import com.agibank.hackathon.service.ColaboradorService;
 import com.agibank.hackathon.service.EmprestimosEquipamentosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -86,18 +83,17 @@ public class EmprestimosEquipamentosController {
                 .data_entrega(emprestimosEquipamentosRequest.getData_entrega())
                 .data_devolucao(emprestimosEquipamentosRequest.getData_devolucao())
                 .status(emprestimosEquipamentosRequest.getStatus())
-                .data_entrega(emprestimosEquipamentosRequest.getData_entrega())
                 .devolucao(emprestimosEquipamentosRequest.getDevolucao())
                 .build();
         EmprestimosEquipamentos emprestimosEquipamentosSalvo = emprestimosEquipamentosService.cadastrarEmprestimosEquipamentos(emprestimosEquipamentos);
 
         EmprestimosEquipamentosResponse emprestimosEquipamentosResponse = EmprestimosEquipamentosResponse.builder()
+                .id(emprestimosEquipamentosSalvo.getId()) // Added missing ID
                 .equipamento(emprestimosEquipamentosSalvo.getEquipamento())
                 .colaborador(emprestimosEquipamentosSalvo.getColaborador())
                 .data_entrega(emprestimosEquipamentosSalvo.getData_entrega())
                 .data_devolucao(emprestimosEquipamentosSalvo.getData_devolucao())
                 .status(emprestimosEquipamentosSalvo.getStatus())
-                .data_entrega(emprestimosEquipamentosSalvo.getData_entrega())
                 .devolucao(emprestimosEquipamentosSalvo.getDevolucao())
                 .build();
 
@@ -105,7 +101,7 @@ public class EmprestimosEquipamentosController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmprestimosEquipamentosResponse> atualizarColaborador(@PathVariable String id, @RequestBody EmprestimosEquipamentosRequest emprestimosEquipamentosRequest) {
+    public ResponseEntity<EmprestimosEquipamentosResponse> atualizarEmprestimosEquipamentos(@PathVariable String id, @RequestBody EmprestimosEquipamentosRequest emprestimosEquipamentosRequest) {
         try {
             EmprestimosEquipamentos emprestimosEquipamentos = EmprestimosEquipamentos.builder()
                     .equipamento(emprestimosEquipamentosRequest.getEquipamento())
@@ -113,10 +109,9 @@ public class EmprestimosEquipamentosController {
                     .data_entrega(emprestimosEquipamentosRequest.getData_entrega())
                     .data_devolucao(emprestimosEquipamentosRequest.getData_devolucao())
                     .status(emprestimosEquipamentosRequest.getStatus())
-                    .data_entrega(emprestimosEquipamentosRequest.getData_entrega())
                     .devolucao(emprestimosEquipamentosRequest.getDevolucao())
                     .build();
-            EmprestimosEquipamentos emprestimosEquipamentosSalvo = emprestimosEquipamentosService.cadastrarEmprestimosEquipamentos(emprestimosEquipamentos);
+            EmprestimosEquipamentos emprestimosEquipamentosSalvo = emprestimosEquipamentosService.atualizar(id, emprestimosEquipamentos); // Fixed method call
 
             EmprestimosEquipamentosResponse emprestimosEquipamentosResponse = EmprestimosEquipamentosResponse.builder()
                     .id(emprestimosEquipamentosSalvo.getId())
@@ -125,7 +120,6 @@ public class EmprestimosEquipamentosController {
                     .data_entrega(emprestimosEquipamentosSalvo.getData_entrega())
                     .data_devolucao(emprestimosEquipamentosSalvo.getData_devolucao())
                     .status(emprestimosEquipamentosSalvo.getStatus())
-                    .data_entrega(emprestimosEquipamentosSalvo.getData_entrega())
                     .devolucao(emprestimosEquipamentosSalvo.getDevolucao())
                     .build();
 
@@ -141,9 +135,10 @@ public class EmprestimosEquipamentosController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteColaborador(@PathVariable String id) {
+    public void deleteEmprestimosEquipamentos(@PathVariable String id) { // Fixed method name
         emprestimosEquipamentosService.deleteEmprestimosEquipamentos(id);
     }
+
     @GetMapping("/historico")
     public ResponseEntity<List<EmprestimosEquipamentosResponse>> listarHistorico(
             @RequestParam(required = false) String colaboradorId,
@@ -179,5 +174,4 @@ public class EmprestimosEquipamentosController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
 }

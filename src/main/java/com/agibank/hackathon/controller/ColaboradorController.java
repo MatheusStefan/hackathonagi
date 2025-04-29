@@ -3,7 +3,6 @@ package com.agibank.hackathon.controller;
 import com.agibank.hackathon.controller.request.ColaboradorRequest;
 import com.agibank.hackathon.controller.request.ColaboradorStatusRequest;
 import com.agibank.hackathon.controller.response.ColaboradorResponse;
-import com.agibank.hackathon.controller.response.ColaboradorStatusResponse;
 import com.agibank.hackathon.controller.response.EquipamentoResponse;
 import com.agibank.hackathon.entities.Colaborador;
 import com.agibank.hackathon.entities.Equipamento;
@@ -18,28 +17,33 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/colaboradores")
+@SuppressWarnings("unused") // Suppress unused class warning
 public class ColaboradorController {
 
     @Autowired
-    public ColaboradorService colaboradorService;
+    private ColaboradorService colaboradorService;
 
     @Autowired
-    public EquipamentoService equipamentoService;
+    private EquipamentoService equipamentoService;
 
     @GetMapping
+    @SuppressWarnings("unused") // Suppress unused method warning
     public List<Colaborador> listarColaboradores() {
         return colaboradorService.listarTodosColaboradores();
     }
 
     @GetMapping("/{id}")
+    @SuppressWarnings("unused") // Suppress unused method warning
     public Colaborador listarColaboradorById(@PathVariable String id) {
-        return colaboradorService.listarColaboradorById(id);
+        return colaboradorService.buscarColaboradorPorId(id); // Updated method name
     }
 
     @PostMapping
+    @SuppressWarnings("unused") // Suppress unused method warning
     public ResponseEntity<ColaboradorResponse> cadastrarColaborador(@RequestBody ColaboradorRequest colaboradorRequest) {
         Colaborador colaborador = Colaborador.builder()
                 .nome(colaboradorRequest.getNome())
+                .equipamentos(colaboradorRequest.getEquipamentos()) // Added to handle equipment list
                 .status(colaboradorRequest.getStatus())
                 .build();
         Colaborador colaboradorSalvo = colaboradorService.cadastrarColaborador(colaborador);
@@ -47,6 +51,7 @@ public class ColaboradorController {
         ColaboradorResponse colaboradorResponse = ColaboradorResponse.builder()
                 .id(colaboradorSalvo.getId())
                 .nome(colaboradorSalvo.getNome())
+                .equipamentos(colaboradorSalvo.getEquipamentos()) // Added to response
                 .status(colaboradorSalvo.getStatus())
                 .build();
 
@@ -54,6 +59,7 @@ public class ColaboradorController {
     }
 
     @PatchMapping("/{id}/equipamentos/{equipamentoId}")
+    @SuppressWarnings("unused") // Suppress unused method warning
     public ResponseEntity<EquipamentoResponse> adicionarEquipamento(@PathVariable String id, @PathVariable String equipamentoId) {
         try {
             Equipamento equipamentosAtualizados = colaboradorService.adicionarEquipamento(id, equipamentoId);
@@ -70,10 +76,12 @@ public class ColaboradorController {
     }
 
     @PutMapping("/{id}")
+    @SuppressWarnings("unused") // Suppress unused method warning
     public ResponseEntity<ColaboradorResponse> atualizarColaborador(@PathVariable String id, @RequestBody ColaboradorRequest colaboradorRequest) {
         try {
             Colaborador colaborador = Colaborador.builder()
                     .nome(colaboradorRequest.getNome())
+                    .equipamentos(colaboradorRequest.getEquipamentos()) // Added to handle equipment list
                     .status(colaboradorRequest.getStatus())
                     .build();
             Colaborador colaboradorSalvo = colaboradorService.atualizar(id, colaborador);
@@ -81,6 +89,7 @@ public class ColaboradorController {
             ColaboradorResponse colaboradorResponse = ColaboradorResponse.builder()
                     .id(colaboradorSalvo.getId())
                     .nome(colaboradorSalvo.getNome())
+                    .equipamentos(colaboradorSalvo.getEquipamentos()) // Added to response
                     .status(colaboradorSalvo.getStatus())
                     .build();
 
@@ -99,6 +108,4 @@ public class ColaboradorController {
     public void deleteColaborador(@PathVariable String id) {
         colaboradorService.deleteColaborador(id);
     }
-
-
 }
