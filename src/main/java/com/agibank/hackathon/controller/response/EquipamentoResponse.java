@@ -1,6 +1,6 @@
 package com.agibank.hackathon.controller.response;
 
-import com.agibank.hackathon.entities.enums.statusEquipamento;
+import com.agibank.hackathon.entities.enums.StatusEquipamento;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,6 +9,6 @@ import lombok.Data;
 public class EquipamentoResponse {
     private String tipo;
     private String modelo;
-    private statusEquipamento status;
+    private StatusEquipamento status;
     private String colaboradorId;
 }

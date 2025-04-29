@@ -1,7 +1,7 @@
 package com.agibank.hackathon.controller.response;
 
 import com.agibank.hackathon.entities.Equipamento;
-import com.agibank.hackathon.entities.enums.statusColaborador;
+import com.agibank.hackathon.entities.enums.StatusColaborador;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -16,5 +16,5 @@ public class ColaboradorResponse {
 
     @DBRef
     private List<Equipamento> equipamentos;
-    private statusColaborador status;
+    private StatusColaborador status;
 }

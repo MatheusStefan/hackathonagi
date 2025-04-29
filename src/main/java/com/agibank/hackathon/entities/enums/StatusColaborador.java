@@ -1,5 +1,5 @@
 package com.agibank.hackathon.entities.enums;
 
-public enum statusColaborador {
+public enum StatusColaborador {
     ativo, desligado, em_desligamento
 }

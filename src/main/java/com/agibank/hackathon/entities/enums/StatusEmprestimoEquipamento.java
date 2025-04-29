@@ -1,5 +1,5 @@
 package com.agibank.hackathon.entities.enums;
 
-public enum statusEmprestimoEquipamento {
+public enum StatusEmprestimoEquipamento {
     ativo, devolvido, sem_devolucao
 }

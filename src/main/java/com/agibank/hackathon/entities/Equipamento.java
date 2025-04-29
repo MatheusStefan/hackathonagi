@@ -1,6 +1,6 @@
 package com.agibank.hackathon.entities;
 
-import com.agibank.hackathon.entities.enums.statusEquipamento;
+import com.agibank.hackathon.entities.enums.StatusEquipamento;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -17,7 +17,7 @@ public class Equipamento {
     private String id;
     private String tipo;
     private String modelo;
-    private statusEquipamento status;
+    private StatusEquipamento status;
 
     private Colaborador colaborador;
 }
