@@ -39,25 +39,17 @@ public class ColaboradorService {
         return mongoTemplate.save(colaborador);
     }
 
-    public List<Equipamento> adicionarEquipamento(String id, List<Equipamento> equipamentos) {
+    public Equipamento adicionarEquipamento(String id, String equipamentoId) {
         Colaborador colaborador = listarColaboradorById(id);
+        Equipamento equipamento = mongoTemplate.findById(equipamentoId, Equipamento.class);
 
-        if (colaborador == null) {
+        if (colaborador == null || equipamento == null) {
             throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
         }
 
-        if (colaborador.getEquipamentos() == null) {
-            colaborador.setEquipamentos(new ArrayList<>());
-        }
+        equipamento.setColaboradorId(id);
 
-        for (Equipamento equipamento : equipamentos) {
-            equipamento.setColaborador(colaborador);
-            var equipamentoSalvo = mongoTemplate.save(equipamento);
-            colaborador.getEquipamentos().add(equipamentoSalvo);
-        }
-        mongoTemplate.save(colaborador);
-
-        return colaborador.getEquipamentos();
+        return mongoTemplate.save(equipamento);
     }
 
     public Colaborador atualizarStatus(String id, ColaboradorStatusRequest colaboradorAtualizado) {
@@ -73,13 +65,10 @@ public class ColaboradorService {
     public Colaborador atualizar(String id, Colaborador colaboradorAtualizado) {
         Colaborador colaboradorExistente = mongoTemplate.findById(id, Colaborador.class);
 
-        System.out.println("Passou aqui");
         if (colaboradorExistente == null) {
             throw new RuntimeException("Colaborador não encontrado com o ID: " + id);
         }
-        System.out.println("Passou aqui");
         colaboradorExistente.setNome(colaboradorAtualizado.getNome());
-        colaboradorExistente.setEquipamentos(colaboradorAtualizado.getEquipamentos());
         colaboradorExistente.setStatus(colaboradorAtualizado.getStatus());
         return mongoTemplate.save(colaboradorExistente);
     }

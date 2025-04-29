@@ -4,10 +4,7 @@ import com.agibank.hackathon.entities.enums.StatusEquipamento;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.List;
 
 @Data
 @Builder
@@ -19,5 +16,5 @@ public class Equipamento {
     private String modelo;
     private StatusEquipamento status;
 
-    private Colaborador colaborador;
+    private String colaboradorId;
 }

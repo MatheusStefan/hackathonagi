@@ -4,6 +4,7 @@ import com.agibank.hackathon.controller.request.ColaboradorRequest;
 import com.agibank.hackathon.controller.request.ColaboradorStatusRequest;
 import com.agibank.hackathon.controller.response.ColaboradorResponse;
 import com.agibank.hackathon.controller.response.ColaboradorStatusResponse;
+import com.agibank.hackathon.controller.response.EquipamentoResponse;
 import com.agibank.hackathon.entities.Colaborador;
 import com.agibank.hackathon.entities.Equipamento;
 import com.agibank.hackathon.service.ColaboradorService;
@@ -39,7 +40,6 @@ public class ColaboradorController {
     public ResponseEntity<ColaboradorResponse> cadastrarColaborador(@RequestBody ColaboradorRequest colaboradorRequest) {
         Colaborador colaborador = Colaborador.builder()
                 .nome(colaboradorRequest.getNome())
-                .equipamentos(colaboradorRequest.getEquipamentos())
                 .status(colaboradorRequest.getStatus())
                 .build();
         Colaborador colaboradorSalvo = colaboradorService.cadastrarColaborador(colaborador);
@@ -53,11 +53,17 @@ public class ColaboradorController {
         return new ResponseEntity<>(colaboradorResponse, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}/equipamentos")
-    public ResponseEntity<List<Equipamento>> adicionarEquipamento(@PathVariable String id, @RequestBody List<Equipamento> equipamento) {
+    @PatchMapping("/{id}/equipamentos/{equipamentoId}")
+    public ResponseEntity<EquipamentoResponse> adicionarEquipamento(@PathVariable String id, @PathVariable String equipamentoId) {
         try {
-            List<Equipamento> equipamentosAtualizados = colaboradorService.adicionarEquipamento(id, equipamento);
-            return new ResponseEntity<>(equipamentosAtualizados, HttpStatus.OK);
+            Equipamento equipamentosAtualizados = colaboradorService.adicionarEquipamento(id, equipamentoId);
+            EquipamentoResponse equipamentoResponse = EquipamentoResponse.builder()
+                    .tipo(equipamentosAtualizados.getTipo())
+                    .modelo(equipamentosAtualizados.getModelo())
+                    .status(equipamentosAtualizados.getStatus())
+                    .colaboradorId(equipamentosAtualizados.getColaboradorId())
+                    .build();
+            return new ResponseEntity<>(equipamentoResponse, HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -68,7 +74,6 @@ public class ColaboradorController {
         try {
             Colaborador colaborador = Colaborador.builder()
                     .nome(colaboradorRequest.getNome())
-                    .equipamentos(colaboradorRequest.getEquipamentos())
                     .status(colaboradorRequest.getStatus())
                     .build();
             Colaborador colaboradorSalvo = colaboradorService.atualizar(id, colaborador);
