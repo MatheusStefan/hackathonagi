@@ -36,6 +36,11 @@ public class EquipamentoController {
         return equipamentoService.listarEquipamentoById(id);
     }
 
+    @GetMapping("/colaborador/{colaboradorId}")
+    public List<Equipamento> listarEquipamentosPorColaborador(@PathVariable String colaboradorId) {
+        return equipamentoService.listarEquipamentosPorColaborador(colaboradorId);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<EquipamentoResponse> atualizarEquipamento(@PathVariable String id, @RequestBody EquipamentoRequest equipamentoRequest) {
         try {
@@ -43,6 +48,7 @@ public class EquipamentoController {
                     .tipo(equipamentoRequest.getTipo())
                     .modelo(equipamentoRequest.getModelo())
                     .status(equipamentoRequest.getStatus())
+                    .colaboradorId(equipamentoRequest.getColaboradorId())
                     .build();
             Equipamento equipamentoSalvo = equipamentoService.atualizar(id, equipamento, equipamentoRequest.getColaboradorId());
 
@@ -50,7 +56,7 @@ public class EquipamentoController {
                     .tipo(equipamentoSalvo.getTipo())
                     .modelo(equipamentoSalvo.getModelo())
                     .status(equipamentoSalvo.getStatus())
-                    .colaboradorId(equipamentoSalvo.getColaborador().getId())
+                    .colaboradorId(equipamentoSalvo.getColaboradorId())
                     .build();
 
             return new ResponseEntity<>(equipamentoResponse, HttpStatus.OK);

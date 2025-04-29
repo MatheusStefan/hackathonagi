@@ -19,5 +19,5 @@ public class Equipamento {
     private String modelo;
     private statusEquipamento status;
 
-    private Colaborador colaborador;
+    private String colaboradorId;
 }

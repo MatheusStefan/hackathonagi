@@ -16,9 +16,6 @@ public class Colaborador {
     @Id
     private String id;
     private String nome;
-
-    @DBRef
-    private List<Equipamento> equipamentos;
     private statusColaborador status;
 }
 
